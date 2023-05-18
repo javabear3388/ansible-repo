@@ -1,0 +1,33 @@
+- hosts: web
+  tasks:
+
+  - name: install the latest version of apps
+    package:
+      name: "{{item}}"
+      state: present
+    with_items:
+    - httpd
+    - unzip
+
+  # - name: download a template from free css to /var/www/html 
+  #   get_url:
+  #     url:  https://www.free-css.com/assets/files/free-css-templates/download/page291/drool.zip
+  #     dest: /var/www/html
+  #     mode: '777'
+  
+  - name: Unarchive a file that is already on the remote machine
+    unarchive:
+      src: https://www.free-css.com/assets/files/free-css-templates/download/page291/drool.zip
+      dest: /var/www/
+      remote_src: yes
+
+  - name: Copy content of directory from unzipped folder to /var/www/html/
+    copy:
+      src: /var/www/drool-html/
+      dest: /var/www/html/
+      remote_src: yes
+
+  - name: Make sure a service is running
+    systemd:
+      state: started
+      name: httpd
