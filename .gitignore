@@ -2,3 +2,5 @@ credentials
 .ssh/*
 *.swp
 terraform*
+inventory*
+

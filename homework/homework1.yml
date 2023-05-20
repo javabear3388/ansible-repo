@@ -8,7 +8,13 @@
     with_items:
     - httpd
     - unzip
-
+  
+  - name: Make sure a service is running
+    systemd:
+      state: started
+      enabled: yes
+      name: httpd
+      
   # - name: download a template from free css to /var/www/html 
   #   get_url:
   #     url:  https://www.free-css.com/assets/files/free-css-templates/download/page291/drool.zip
@@ -27,7 +33,3 @@
       dest: /var/www/html/
       remote_src: yes
 
-  - name: Make sure a service is running
-    systemd:
-      state: started
-      name: httpd
