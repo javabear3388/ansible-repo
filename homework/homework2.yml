@@ -1,0 +1,48 @@
+- hosts: all
+  tasks:
+  - debug:
+      msg: "os is {{ansible_os_family}}, host name is {{inventory_hostname}}"
+
+  - name: install the latest version of apps on Redhat
+    yum:
+      name: "{{item}}"
+      state: present
+    with_items:
+    - httpd
+    - unzip
+    when: ansible_os_family == "RedHat"
+
+  - name: install the latest version of apps
+    apt:
+      name: "{{item}}"
+      state: present
+    with_items:
+    - apache2
+    - unzip
+    when: ansible_os_family == "Debian"
+
+  - name: Make sure a service is running
+    systemd:
+      state: started
+      enabled: yes
+      name: httpd
+    when: ansible_os_family == "RedHat"
+
+  - name: Make sure a service is running
+    systemd:
+      state: started
+      enabled: yes
+      name: apache2
+    when: ansible_os_family == "Debian"
+
+  - name: Unarchive a file that is already on the remote machine
+    unarchive:
+      src: https://www.free-css.com/assets/files/free-css-templates/download/page291/drool.zip
+      dest: /var/www/
+      remote_src: yes
+
+  - name: Copy content of directory from unzipped folder to /var/www/html/
+    copy:
+      src: /var/www/drool-html/
+      dest: /var/www/html/
+      remote_src: yes
